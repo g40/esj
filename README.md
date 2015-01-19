@@ -1,7 +1,9 @@
 esj
 ===
 
-Extremely Simple JSON for C++
+###Extremely Simple JSON for C++
+
+Usage:
 
 ```
 //-----------------------------------------------------------------------------
@@ -43,6 +45,8 @@ produces:
 ```
 {"JSONExample":{"text":"Hello JSON World"}}
 ```
+
+###Notes
 
 std::string maps to JSON string.
 
