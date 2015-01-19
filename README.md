@@ -45,13 +45,21 @@ produces:
 ```
 
 std::string maps to JSON string.
+
 std::wstring maps to JSON string with support for \UXXXX encoding and decoding.
+
 int maps to JSON number (ignores the fractional part when de-serializing).
+
 double also maps to JSON number.
+
 bool maps to JSON true or false.
+
 std::vector<T> maps directly to a JSON array. 
+
 If T implements the correct serialize() function, then the serializer will work as expected for vectors of T.
+
 The serializer will also correctly handle nested serializable instances, thus allowing fairly complex constructs to be easily transformed to and from JSON.
+
 Single line macros used for brevity and stringizing only.
 
 See /doc for more or visit: http://www.codeproject.com/script/Articles/View.aspx?aid=856277
