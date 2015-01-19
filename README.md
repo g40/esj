@@ -48,9 +48,11 @@ produces:
 
 ###Notes
 
+Enable bi-directional JSON serialization of C++ classes with via dependency-free header only library written in tested, portable C++ (Visual C++/Clang/GCC/ARM) 
+
 std::string maps to JSON string.
 
-std::wstring maps to JSON string with support for \UXXXX encoding and decoding.
+std::wstring maps to JSON string with support for \UXXXX encoding and decoding (UTF16 anbd UTF32).
 
 int maps to JSON number (ignores the fractional part when de-serializing).
 
