@@ -3,6 +3,8 @@ esj
 
 ###Extremely Simple JSON for C++
 
+Enable bi-directional JSON serialization of C++ classes with via dependency-free header only library written in tested, portable C++ (Visual C++/Clang/GCC/ARM) 
+
 Usage:
 
 ```
@@ -47,8 +49,6 @@ produces:
 ```
 
 ###Notes
-
-Enable bi-directional JSON serialization of C++ classes with via dependency-free header only library written in tested, portable C++ (Visual C++/Clang/GCC/ARM) 
 
 std::string maps to JSON string.
 
