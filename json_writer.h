@@ -136,12 +136,12 @@ namespace JSON
 
 		virtual void serialize(const std::string& key,int& value,bool more) 
 		{
-			(*_sink) << Quote() << key << Quote() << ':' << Quote() << value << Quote() << (more ? "," : "");
+			(*_sink) << Quote() << key << Quote() << ':' << value << (more ? "," : "");
 		}
 
 		virtual void serialize(const std::string& key,double& value,bool more) 
 		{
-			(*_sink) << Quote() << key << Quote() << ':' << Quote() << value << Quote() << (more ? "," : "");
+			(*_sink) << Quote() << key << Quote() << ':' << value << (more ? "," : "");
 		}
 
 		virtual void serialize(const std::string& key,bool& value,bool more) 

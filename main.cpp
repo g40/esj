@@ -127,11 +127,14 @@ public:
 
 	// these items support serialization via JSON
 	std::vector<std::string> string_data;
-	std::vector<int> int_data;
-	std::vector<double> double_data;
+	std::vector<int> v_int_data;
+	std::vector<double> v_double_data;
 	std::vector<bool> v_bool_data;
 	std::vector<InnerExample>  v_inner_data;
 	InnerExample m_inner;
+	// whoops! missed in test!
+	int int_data;
+	double double_data;
 	bool bool_data;
 	// check encoding round trips work
 	std::wstring hiragana;
@@ -141,10 +144,12 @@ public:
 	{
 		// this pattern is required 
 		JSON::Class root(adapter,"OuterExample");
-		JSON_E(adapter,bool_data);
-		JSON_E(adapter,string_data);
 		JSON_E(adapter,int_data);
 		JSON_E(adapter,double_data);
+		JSON_E(adapter,bool_data);
+		JSON_E(adapter,string_data);
+		JSON_E(adapter,v_int_data);
+		JSON_E(adapter,v_double_data);
 		JSON_E(adapter,v_inner_data);
 		JSON_E(adapter,v_bool_data);
 		JSON_E(adapter,hiragana);
@@ -160,6 +165,7 @@ public:
 		// conversions from double to string render test unreliable
 		// ret &= (double_data == arg.double_data);
 		ret &= (bool_data == arg.bool_data);
+		ret &= (v_int_data == arg.v_int_data);
 		ret &= (v_inner_data == arg.v_inner_data);
 		ret &= (v_bool_data == arg.v_bool_data);
 		return ret;
@@ -181,16 +187,18 @@ void test_nesting()
     
 	//tester.hiragana = L"ゆき";
 
+	tester.int_data = 426;
+	tester.double_data = 12.34;
 	tester.bool_data = false;
 	tester.string_data.push_back("Hello");
 	tester.string_data.push_back("world");
 	tester.string_data.push_back("...");
-	tester.int_data.push_back(1);
-	tester.int_data.push_back(11);
-	tester.int_data.push_back(111);
-	tester.double_data.push_back(1.234);
-	tester.double_data.push_back(11.234);
-	tester.double_data.push_back(111.234);
+	tester.v_int_data.push_back(1);
+	tester.v_int_data.push_back(11);
+	tester.v_int_data.push_back(111);
+	tester.v_double_data.push_back(1.234);
+	tester.v_double_data.push_back(11.234);
+	tester.v_double_data.push_back(111.234);
 	tester.v_bool_data.push_back(true);
 	tester.v_bool_data.push_back(false);
 	tester.v_bool_data.push_back(true);
