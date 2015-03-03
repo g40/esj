@@ -263,6 +263,7 @@ inline void stream(Adapter& adapter,const std::string& key,std::vector<T>& value
 {
 	typedef typename::std::vector<T>::iterator iterator_t;
 	//
+	bool outer_vector = adapter.is_vector();
 	adapter.vector(true);
 	//
 	if (adapter.storing())
@@ -324,7 +325,7 @@ inline void stream(Adapter& adapter,const std::string& key,std::vector<T>& value
 		}
 	}
 	//
-	adapter.vector(false);
+	adapter.vector(outer_vector);
 }
 	
 	// each C++ class which can be serialized needs to declare a 
