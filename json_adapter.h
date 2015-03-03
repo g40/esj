@@ -262,8 +262,9 @@ template <typename T>
 inline void stream(Adapter& adapter,const std::string& key,std::vector<T>& value,bool more)
 {
 	typedef typename::std::vector<T>::iterator iterator_t;
-	//
+	// https://github.com/g40/esj/pull/2/files
 	bool outer_vector = adapter.is_vector();
+	// 
 	adapter.vector(true);
 	//
 	if (adapter.storing())
@@ -324,7 +325,7 @@ inline void stream(Adapter& adapter,const std::string& key,std::vector<T>& value
 			adapter.serialize(T_COMMA);
 		}
 	}
-	//
+	// https://github.com/g40/esj/pull/2/files
 	adapter.vector(outer_vector);
 }
 	

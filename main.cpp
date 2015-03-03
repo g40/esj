@@ -38,6 +38,37 @@
 #include "json_reader.h"
 #include "pt.h"
 
+
+class C{
+public:
+	std::string c;
+
+	void serialize(JSON::Adapter& adapter){
+		JSON::Class root(adapter, "C");
+		JSON_T(adapter, c);
+	}
+};
+
+class B{
+public:
+	std::vector<C> b;
+
+	void serialize(JSON::Adapter& adapter){
+		JSON::Class root(adapter, "B");
+		JSON_T(adapter, b);
+	}
+};
+
+class A{
+public:
+	std::vector<B> a;
+
+	void serialize(JSON::Adapter& adapter){
+		JSON::Class root(adapter, "A");
+		JSON_T(adapter, a);
+	}
+};
+
 //-----------------------------------------------------------------------------
 // absolutely minimal example
 class JSONExample
@@ -392,6 +423,32 @@ void test_converter()
 }
 
 //-----------------------------------------------------------------------------
+// thanks to btcinsight!
+void test_nesting2()
+{
+	A a;
+	a.a.push_back(B());
+	std::string expected = "{\"A\":{\"a\":[{\"B\":{\"b\":[]}}]}}";
+	std::string json = JSON::producer<A>::convert(a);
+	std::cout << "test_nesting2 " << json << std::endl;
+	JSON::throw_if(json != expected,Chordia::stringer() << json << "!=" << expected);
+}
+
+//-----------------------------------------------------------------------------
+// test multiple levels of nesting
+void test_nesting3()
+{
+	A a;
+	B b;
+	b.b.push_back(C());
+	a.a.push_back(b);
+	std::string expected = "{\"A\":{\"a\":[{\"B\":{\"b\":[{\"C\":{\"c\":\"\"}}]}}]}}";
+	std::string json = JSON::producer<A>::convert(a);
+	std::cout << "test_nesting3 " << json << std::endl;
+	JSON::throw_if(json != expected,Chordia::stringer() << json << "!=" << expected);
+}
+
+//-----------------------------------------------------------------------------
 // to nearest       FE_TONEAREST   _RC_NEAR
 // toward zero      FE_TOWARDZERO  _RC_CHOP
 // to +infinity     FE_UPWARD      _RC_UP
@@ -400,6 +457,7 @@ void test_converter()
 // Runs a set of uni8t tests for various components ...
 int main(int argc, char* argv[])
 {
+
 	// typedef function type for each test
 	typedef void (*pfnTest)();
 	// a vector of the same
@@ -411,6 +469,8 @@ int main(int argc, char* argv[])
 	tests.push_back(test_scanner);
 	tests.push_back(test_templates);
 	tests.push_back(test_nesting);
+	tests.push_back(test_nesting2);
+	tests.push_back(test_nesting3);
 
 	// invoke each test - keep going even if we get failures
 	int failures = 0;
