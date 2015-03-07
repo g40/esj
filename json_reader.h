@@ -214,6 +214,13 @@ namespace JSON
 			GetNext(key,T_NUMBER,ss,more);
 			value = Chordia::toInt(ss);
 		}
+		
+		virtual void serialize(const std::string& key,unsigned char& value,bool more)
+		{
+			std::string ss;
+			GetNext(key,T_NUMBER,ss,more);
+			value = Chordia::toInt(ss);
+		}
 
 		virtual void serialize(const std::string& key,double& value,bool more)
 		{
