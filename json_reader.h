@@ -219,7 +219,7 @@ namespace JSON
 		{
 			std::string ss;
 			GetNext(key,T_NUMBER,ss,more);
-			value = Chordia::toInt(ss);
+			value = static_cast<unsigned char>(Chordia::toInt(ss));
 		}
 
 		virtual void serialize(const std::string& key,double& value,bool more)
@@ -264,7 +264,7 @@ namespace JSON
 		{
 			GetNext(T_NUMBER);
 			// key matches parsed value
-			value = Chordia::toInt(m_token.text);
+			value = static_cast<char>(Chordia::toInt(m_token.text));
 		}
 
 		virtual void serialize(double& value)	

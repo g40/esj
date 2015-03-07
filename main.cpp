@@ -448,6 +448,60 @@ void test_nesting3()
 	JSON::throw_if(json != expected,Chordia::stringer() << json << "!=" << expected);
 }
 
+class F {
+public:
+	F() : element(4) {
+
+	}
+
+	void serialize(JSON::Adapter& adapter) {
+		JSON::Class root(adapter,"F");
+		JSON_T(adapter, element);
+	}
+protected:
+	int element;
+};
+
+class E {
+public:
+
+
+	E() : element1(54) {
+
+	}
+
+	void serialize(JSON::Adapter& adapter) {
+		JSON::Class root(adapter,"E");
+		JSON_E(adapter, element1);
+		JSON_T(adapter, element2);
+	}
+protected:
+	int element1;
+	F element2;
+};
+
+class D {
+public:
+
+	void serialize(JSON::Adapter& adapter) {
+		JSON::Class root(adapter,"D");
+		JSON_T(adapter, data);
+	}
+
+	std::vector<E> data;
+};
+
+void test_issue2()
+{
+	D d;
+	d.data.push_back(E());
+
+	std::string expected = "{\"D\":{\"data\":[{\"E\":{\"element1\":54,\"F\":{\"element\":4}}}]}}";
+	std::string json = JSON::producer<D>::convert(d);
+	std::cout << "test_issue2() " << json << std::endl;
+	JSON::throw_if(json != expected,Chordia::stringer() << json << "!=" << expected);
+}
+
 //-----------------------------------------------------------------------------
 // to nearest       FE_TONEAREST   _RC_NEAR
 // toward zero      FE_TOWARDZERO  _RC_CHOP
@@ -457,7 +511,6 @@ void test_nesting3()
 // Runs a set of uni8t tests for various components ...
 int main(int argc, char* argv[])
 {
-
 	// typedef function type for each test
 	typedef void (*pfnTest)();
 	// a vector of the same
@@ -471,6 +524,7 @@ int main(int argc, char* argv[])
 	tests.push_back(test_nesting);
 	tests.push_back(test_nesting2);
 	tests.push_back(test_nesting3);
+	tests.push_back(test_issue2);
 
 	// invoke each test - keep going even if we get failures
 	int failures = 0;
