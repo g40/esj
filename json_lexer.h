@@ -192,7 +192,7 @@ public:
 
 //-----------------------------------------------------------------------------
 // throw with a suitable error message if the condition is true
-void throw_if(ISource* pSource,bool condition,std::string msg)
+inline void throw_if(ISource* pSource,bool condition,std::string msg)
 {
 	if (condition == true)
 	{
@@ -204,7 +204,7 @@ void throw_if(ISource* pSource,bool condition,std::string msg)
 
 //-----------------------------------------------------------------------------
 // throw with a suitable error message if the condition is true
-void throw_if(bool condition,Chordia::stringer& msg)
+inline void throw_if(bool condition,Chordia::stringer& msg)
 {
 	if (condition == true)
 	{

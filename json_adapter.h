@@ -277,12 +277,16 @@ inline void stream(Adapter& adapter,const std::string& key,std::vector<T>& value
 		{
 			// VC2012 cannot disambiguate the type of T when a vector of bool is used.
 			T t = (*it);
+			adapter.serialize(T_OBJ_BEGIN);
 			stream(adapter,t);
+			adapter.serialize(T_OBJ_END);
 			for (++it; it != value.end(); ++it)
 			{
 				adapter.serialize(T_COMMA);
 				t = (*it);
+				adapter.serialize(T_OBJ_BEGIN);
 				stream(adapter,t);
+				adapter.serialize(T_OBJ_END);
 			}
 		}
 		adapter.serialize(T_ARRAY_END);
@@ -311,8 +315,11 @@ inline void stream(Adapter& adapter,const std::string& key,std::vector<T>& value
 			{
 				// create a new instance
 				T t;
+				adapter.serialize(T_OBJ_BEGIN);
 				// read off adapter
 				stream(adapter,t);
+				
+				adapter.serialize(T_OBJ_END);
 				// push back into vector
 				value.push_back(t);
 				// keep going if we have a ',', end if ']'
@@ -354,11 +361,8 @@ inline void stream(Adapter& adapter,const std::string& key,std::vector<T>& value
 			}
 			// this is a runtime call - we could differentiate at compile time
 			// but we start getting into heavy template work which this
-			// tries to avoid 
-			if (adapter.is_vector())
-			{
-				m_pAdapter->serialize(T_OBJ_BEGIN);
-			}
+			// tries to avoid
+			
 			// emit/check "type_name"
 			m_pAdapter->serialize(type_name);
 			//
@@ -373,12 +377,6 @@ inline void stream(Adapter& adapter,const std::string& key,std::vector<T>& value
 		{
 			// destructor emits closing scope(s)
 			m_pAdapter->serialize(T_OBJ_END);
-			
-			// why? 
-			if (m_pAdapter->is_vector())
-			{
-				m_pAdapter->serialize(T_OBJ_END);
-			}
 
 			// is this the final scope?
 			int count = m_pAdapter->dec();

@@ -100,7 +100,7 @@ namespace JSON
 		}
 
 		//-----------------------------------------------------------------------------
-		void throw_if(bool condition,std::string msg)
+		inline void throw_if(bool condition,std::string msg)
 		{
 			if (condition == true)
 			{
