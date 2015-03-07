@@ -100,7 +100,7 @@ namespace JSON
 		}
 
 		//-----------------------------------------------------------------------------
-		void throw_if(bool condition,std::string msg)
+		inline void throw_if(bool condition,std::string msg)
 		{
 			if (condition == true)
 			{
@@ -209,6 +209,13 @@ namespace JSON
 		}
 		
 		virtual void serialize(const std::string& key,int& value,bool more)
+		{
+			std::string ss;
+			GetNext(key,T_NUMBER,ss,more);
+			value = Chordia::toInt(ss);
+		}
+		
+		virtual void serialize(const std::string& key,unsigned char& value,bool more)
 		{
 			std::string ss;
 			GetNext(key,T_NUMBER,ss,more);

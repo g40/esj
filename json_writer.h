@@ -138,6 +138,11 @@ namespace JSON
 		{
 			(*_sink) << Quote() << key << Quote() << ':' << value << (more ? "," : "");
 		}
+		
+		virtual void serialize(const std::string& key,unsigned char& value,bool more)
+		{
+			(*_sink) << Quote() << key << Quote() << ':' << value << (more ? "," : "");
+		}
 
 		virtual void serialize(const std::string& key,double& value,bool more) 
 		{

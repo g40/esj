@@ -68,7 +68,7 @@ namespace Chordia
 
 	//-------------------------------------------------------------------------
 	// rather tricksy in place string reversal
-	void reverse(std::string& ret,size_t offset = 0)
+	inline void reverse(std::string& ret,size_t offset = 0)
 	{
 		// 
 		for (size_t i = offset, j = ret.size() - 1; i < j; i++, j--)
@@ -82,7 +82,7 @@ namespace Chordia
 
 	//-------------------------------------------------------------------------
 	// integer to ASCII
-	std::string toString(int64_t value, int base = 10)
+	inline std::string toString(int64_t value, int base = 10)
 	{
 		std::string result;
 		// this is a symmetric lookup table. zero is mid range
@@ -114,7 +114,7 @@ namespace Chordia
 	}
 
 	//-------------------------------------------------------------------------
-	std::string toString(int value, int base = 10)
+	inline std::string toString(int value, int base = 10)
 	{
 		return toString((int64_t)value,base);
 	}
@@ -123,7 +123,7 @@ namespace Chordia
 	//-------------------------------------------------------------------------
 	// double to ASCII. 
 	// This is pretty simplistic, not, for example, handling rounding
-	std::string toString(double value,double precision = 0.0001)
+	inline std::string toString(double value,double precision = 0.0001)
 	{
 		std::string ret;
 		// handle special cases
@@ -355,7 +355,7 @@ namespace Chordia
 	}
 
 	//-------------------------------------------------------------------------
-	std::string escape(const std::string& arg)
+	inline std::string escape(const std::string& arg)
 	{
 		char chr = 0;
 		std::string ret;
@@ -397,7 +397,7 @@ namespace Chordia
 
 	//-------------------------------------------------------------------------
 	// convert from UTF16|32 to JSON encoded UTF8
-	std::string escape(const std::wstring& arg)
+	inline std::string escape(const std::wstring& arg)
 	{
 		int32_t chr = 0;
 		std::string ret;
