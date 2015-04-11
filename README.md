@@ -52,7 +52,7 @@ produces:
 
 std::string maps to JSON string.
 
-std::wstring maps to JSON string with support for \UXXXX encoding and decoding (UTF16 anbd UTF32).
+std::wstring maps to JSON string with support for \UXXXX encoding and decoding (UTF16 and UTF32).
 
 int maps to JSON number (ignores the fractional part when de-serializing).
 
