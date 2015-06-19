@@ -36,9 +36,9 @@ int main(int argc,char* argv[])
     JSONExample source;
     source.text = "Hello JSON World";
     // create JSON from a producer
-    std::string json = JSON::producer<JSONExample>(source);
+    std::string json = JSON::producer<JSONExample>::convert(source);
     // and then create a new instance from a consumer ...
-    JSONExample sink = JSON::consumer<JSONExample>(json);
+    JSONExample sink = JSON::consumer<JSONExample>::convert(json);
     // we are done ...
 }
 ```
