@@ -251,7 +251,15 @@ namespace JSON
 			source.serialize(writer);
 			// and get the JSON string from the sink
 			//
+#ifdef _STANDALONE
 			return json.c_str();
+#else
+#ifdef _UNICODE
+			return Chordia::convert_w(json.c_str());
+#else
+			return json.c_str();
+#endif
+#endif
 		}
 	};
 }

@@ -37,8 +37,30 @@
 
 #include <string>
 #include <stdint.h>
-#include "stringer.h"
+
+#ifdef _STANDALONE
+
 #include "platform_selector.h"
+#include "stringer.h"
+
+#else
+
+#include "../strbuild.h"
+
+namespace Chordia
+{
+	typedef string_builder stringer;
+}
+
+class json_exception : public std::runtime_error
+{
+public:
+
+	json_exception(const wchar_t* p) : std::runtime_error(Chordia::convert_w(p).c_str()) {}
+};
+
+#endif
+
 
 namespace JSON
 {

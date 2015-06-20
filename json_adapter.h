@@ -217,7 +217,8 @@ inline void	stream(Adapter& adapter,const std::string& key,int& value,bool more)
 	adapter.serialize(key,value,more);
 }
 
-inline void stream(Adapter& adapter, const std::string& key, unsigned char& value, bool more) {
+inline void stream(Adapter& adapter, const std::string& key, unsigned char& value, bool more) 
+{
 	adapter.serialize(key,value,more);
 }
 
@@ -260,7 +261,12 @@ inline void stream(Adapter& adapter,const std::string& key,std::vector<T>& value
 {
 	typedef typename::std::vector<T>::iterator iterator_t;
 	// https://github.com/g40/esj/pull/2/files
-	
+
+	// yack. 
+	bool json_primitive = (std::is_same<T,std::wstring>::value || 
+						std::is_same<T,std::string>::value ||
+						std::is_integral<T>::value ||
+						std::is_floating_point<T>::value);
 	// 
 		//
 	if (adapter.storing())
@@ -273,16 +279,16 @@ inline void stream(Adapter& adapter,const std::string& key,std::vector<T>& value
 		{
 			// VC2012 cannot disambiguate the type of T when a vector of bool is used.
 			T t = (*it);
-			adapter.serialize(T_OBJ_BEGIN);
+			if (!json_primitive) { adapter.serialize(T_OBJ_BEGIN); } // <-- achtung baby. avoid when JSONizing strings or numbers (!)
 			stream(adapter,t);
-			adapter.serialize(T_OBJ_END);
+			if (!json_primitive) { adapter.serialize(T_OBJ_END); }
 			for (++it; it != value.end(); ++it)
 			{
 				adapter.serialize(T_COMMA);
 				t = (*it);
-				adapter.serialize(T_OBJ_BEGIN);
+				if (!json_primitive) { adapter.serialize(T_OBJ_BEGIN); }
 				stream(adapter,t);
-				adapter.serialize(T_OBJ_END);
+				if (!json_primitive) { adapter.serialize(T_OBJ_END); }
 			}
 		}
 		adapter.serialize(T_ARRAY_END);
@@ -311,11 +317,11 @@ inline void stream(Adapter& adapter,const std::string& key,std::vector<T>& value
 			{
 				// create a new instance
 				T t;
-				adapter.serialize(T_OBJ_BEGIN);
+				if (!json_primitive) { adapter.serialize(T_OBJ_BEGIN); }
 				// read off adapter
 				stream(adapter,t);
 				
-				adapter.serialize(T_OBJ_END);
+				if (!json_primitive) { adapter.serialize(T_OBJ_END); }
 				// push back into vector
 				value.push_back(t);
 				// keep going if we have a ',', end if ']'
