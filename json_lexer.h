@@ -38,12 +38,10 @@
 #include <string>
 #include <stdint.h>
 
-#ifdef _STANDALONE
-
-#include "platform_selector.h"
-#include "stringer.h"
-
-#else
+// this is to enable ESJ to play nice with an existing (and complex)
+// set of header implementations. apologies for the noise
+// that pulls in these headers
+#ifdef _INTEGRATED
 
 #include "../strbuild.h"
 
@@ -58,6 +56,12 @@ public:
 
 	json_exception(const wchar_t* p) : std::runtime_error(Chordia::convert_w(p).c_str()) {}
 };
+
+#else
+
+//
+#include "platform_selector.h"
+#include "stringer.h"
 
 #endif
 

@@ -259,16 +259,41 @@ inline void stream(Adapter& adapter,const std::string& /*key*/,T& value,bool mor
 template <typename T>
 inline void stream(Adapter& adapter,const std::string& key,std::vector<T>& value,bool more)
 {
-	typedef typename::std::vector<T>::iterator iterator_t;
 	// https://github.com/g40/esj/pull/2/files
 
-	// yack. 
+	// yack. Now there is a reason why this approach was chosen. The usual (and in my
+	// opinion better) way to do this is to have a number of suitably overloaded
+	// template functions. However so doing can be ambiguous given that we *only*
+	// want C++ strings and primitive bool/int/float. The resultant explosion of
+	// interfaces makes things far less clear
 	bool json_primitive = (std::is_same<T,std::wstring>::value || 
 						std::is_same<T,std::string>::value ||
 						std::is_integral<T>::value ||
 						std::is_floating_point<T>::value);
-	// 
+	// but we _can_ make the implementation a little easier to follow by doing this:
+	if (json_primitive)
+	{
+		stream_primitives<T>(adapter,key,value,more);
+	}
+	else
+	{
+		stream_classes<T>(adapter,key,value,more);
+	}
 		//
+	// https://github.com/g40/esj/pull/2/files
+}
+
+//-----------------------------------------------------------------------------
+// this means we get (with quotes removed for clarity) vectors of string etc
+// written out as:
+// array : [ e0, e1, ..., en ]
+// rather than
+// array : [ { e0 }, { e1 }, ..., { eN } ]
+// 
+template <typename T>
+inline void stream_primitives(Adapter& adapter,const std::string& key,std::vector<T>& value,bool more)
+{
+	typedef typename::std::vector<T>::iterator iterator_t;
 	if (adapter.storing())
 	{
 		adapter.serialize(key);
@@ -279,16 +304,12 @@ inline void stream(Adapter& adapter,const std::string& key,std::vector<T>& value
 		{
 			// VC2012 cannot disambiguate the type of T when a vector of bool is used.
 			T t = (*it);
-			if (!json_primitive) { adapter.serialize(T_OBJ_BEGIN); } // <-- achtung baby. avoid when JSONizing strings or numbers (!)
 			stream(adapter,t);
-			if (!json_primitive) { adapter.serialize(T_OBJ_END); }
 			for (++it; it != value.end(); ++it)
 			{
 				adapter.serialize(T_COMMA);
 				t = (*it);
-				if (!json_primitive) { adapter.serialize(T_OBJ_BEGIN); }
 				stream(adapter,t);
-				if (!json_primitive) { adapter.serialize(T_OBJ_END); }
 			}
 		}
 		adapter.serialize(T_ARRAY_END);
@@ -317,11 +338,8 @@ inline void stream(Adapter& adapter,const std::string& key,std::vector<T>& value
 			{
 				// create a new instance
 				T t;
-				if (!json_primitive) { adapter.serialize(T_OBJ_BEGIN); }
 				// read off adapter
 				stream(adapter,t);
-				
-				if (!json_primitive) { adapter.serialize(T_OBJ_END); }
 				// push back into vector
 				value.push_back(t);
 				// keep going if we have a ',', end if ']'
@@ -334,10 +352,81 @@ inline void stream(Adapter& adapter,const std::string& key,std::vector<T>& value
 			adapter.serialize(T_COMMA);
 		}
 	}
-	// https://github.com/g40/esj/pull/2/files
-	
 }
-	
+
+//-----------------------------------------------------------------------------
+// this is the serializer for any non-primitive types including your own ...
+template <typename T>
+inline void stream_classes(Adapter& adapter,const std::string& key,std::vector<T>& value,bool more)
+{
+	typedef typename::std::vector<T>::iterator iterator_t;
+	if (adapter.storing())
+	{
+		adapter.serialize(key);
+		adapter.serialize(T_COLON);
+		adapter.serialize(T_ARRAY_BEGIN);
+		iterator_t it = value.begin();
+		if (it != value.end())
+		{
+			// VC2012 cannot disambiguate the type of T when a vector of bool is used.
+			T t = (*it);
+			adapter.serialize(T_OBJ_BEGIN); // <-- achtung baby. avoid when JSONizing strings or numbers (!)
+			stream(adapter,t);
+			adapter.serialize(T_OBJ_END);
+			for (++it; it != value.end(); ++it)
+			{
+				adapter.serialize(T_COMMA);
+				t = (*it);
+				adapter.serialize(T_OBJ_BEGIN);
+				stream(adapter,t);
+				adapter.serialize(T_OBJ_END);
+			}
+		}
+		adapter.serialize(T_ARRAY_END);
+		if (more)
+		{
+			adapter.serialize(T_COMMA);
+		}
+	}
+	else
+	{
+		// expecting "name" ':'
+		adapter.serialize(key);
+		//
+		adapter.serialize(T_COLON);
+		// '['
+		adapter.serialize(T_ARRAY_BEGIN);
+		// cope with empty arrays so we need look-ahead here
+		if (adapter.peek(T_ARRAY_END))
+		{
+			// ']'
+			adapter.serialize(T_ARRAY_END);
+		}
+		else
+		{
+			do 
+			{
+				// create a new instance
+				T t;
+				adapter.serialize(T_OBJ_BEGIN);
+				// read off adapter
+				stream(adapter,t);
+
+				adapter.serialize(T_OBJ_END); 
+				// push back into vector
+				value.push_back(t);
+				// keep going if we have a ',', end if ']'
+			} while (adapter.more());
+		}
+		// 
+		if (more)
+		{
+			// there will be more ...
+			adapter.serialize(T_COMMA);
+		}
+	}
+}
+
 	// each C++ class which can be serialized needs to declare a 
 	// single Class instance in the top-most scope of the 
 	// serialize() function. This is to ensure correct JSON class

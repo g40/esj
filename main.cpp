@@ -33,7 +33,6 @@
 #include <vector>
 #include <stdio.h>
 
-#define _STANDALONE
 //-----------------------------------------------------------------------------
 #include "json_writer.h"
 #include "json_reader.h"
