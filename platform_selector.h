@@ -101,7 +101,7 @@ typedef int64_t int_size;
 // apologies for the macros once more ...?
 #define _IS_NAN(arg) std::isnan(arg)
 #define _IS_INF(arg) std::isinf(arg)
-
+#define __PLATFORM_THROW(arg) throw (arg)
 //
 typedef int64_t int_size;
 
