@@ -70,7 +70,7 @@ namespace std
 // apologies for the macros once more ...?
 #define _IS_NAN(arg) std::isnan(arg)
 #define _IS_INF(arg) std::isinf(arg)
-#define __THROW(arg) throw arg
+#define __PLATFORM_THROW(arg) throw (arg)
 	
 }
 
@@ -90,7 +90,7 @@ typedef int64_t int_size;
 // apologies for the macros once more ...?
 #define _IS_NAN(arg) isnan(arg)
 #define _IS_INF(arg) isinf(arg)
-#define __THROW(arg) throw arg
+#define __PLATFORM_THROW(arg) throw (arg)
 
 // g++
 #elif defined(__GNUG__)
@@ -101,7 +101,7 @@ typedef int64_t int_size;
 // apologies for the macros once more ...?
 #define _IS_NAN(arg) std::isnan(arg)
 #define _IS_INF(arg) std::isinf(arg)
-
+#define __PLATFORM_THROW(arg) throw (arg)
 //
 typedef int64_t int_size;
 
@@ -113,7 +113,7 @@ typedef int64_t int_size;
 // apologies for the macros once more ...?
 #define _IS_NAN(arg) isnan(arg)
 #define _IS_INF(arg) isinf(arg)
-#define __THROW(arg) throw arg
+#define __PLATFORM_THROW(arg) throw (arg)
 //
 typedef int32_t int_size;
 

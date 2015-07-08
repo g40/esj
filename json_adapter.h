@@ -254,34 +254,6 @@ inline void stream(Adapter& adapter,const std::string& /*key*/,T& value,bool mor
 	}
 }
 
-//-----------------------------------------------------------------------------
-// serialize a vector of T.
-template <typename T>
-inline void stream(Adapter& adapter,const std::string& key,std::vector<T>& value,bool more)
-{
-	// https://github.com/g40/esj/pull/2/files
-
-	// yack. Now there is a reason why this approach was chosen. The usual (and in my
-	// opinion better) way to do this is to have a number of suitably overloaded
-	// template functions. However so doing can be ambiguous given that we *only*
-	// want C++ strings and primitive bool/int/float. The resultant explosion of
-	// interfaces makes things far less clear
-	bool json_primitive = (std::is_same<T,std::wstring>::value || 
-						std::is_same<T,std::string>::value ||
-						std::is_integral<T>::value ||
-						std::is_floating_point<T>::value);
-	// but we _can_ make the implementation a little easier to follow by doing this:
-	if (json_primitive)
-	{
-		stream_primitives<T>(adapter,key,value,more);
-	}
-	else
-	{
-		stream_classes<T>(adapter,key,value,more);
-	}
-		//
-	// https://github.com/g40/esj/pull/2/files
-}
 
 //-----------------------------------------------------------------------------
 // this means we get (with quotes removed for clarity) vectors of string etc
@@ -474,6 +446,36 @@ inline void stream_classes(Adapter& adapter,const std::string& key,std::vector<T
 			}
 		}
 	};
+
+//-----------------------------------------------------------------------------
+// serialize a vector of T.
+template <typename T>
+inline void stream(Adapter& adapter,const std::string& key,std::vector<T>& value,bool more)
+{
+	// https://github.com/g40/esj/pull/2/files
+
+	// yack. Now there is a reason why this approach was chosen. The usual (and in my
+	// opinion better) way to do this is to have a number of suitably overloaded
+	// template functions. However so doing can be ambiguous given that we *only*
+	// want C++ strings and primitive bool/int/float. The resultant explosion of
+	// interfaces makes things far less clear
+	bool json_primitive = (std::is_same<T,std::wstring>::value || 
+						std::is_same<T,std::string>::value ||
+						std::is_integral<T>::value ||
+						std::is_floating_point<T>::value);
+	// but we _can_ make the implementation a little easier to follow by doing this:
+	if (json_primitive)
+	{
+		stream_primitives<T>(adapter,key,value,more);
+	}
+	else
+	{
+		stream_classes<T>(adapter,key,value,more);
+	}
+		//
+	// https://github.com/g40/esj/pull/2/files
+}
+
 }	// JSON
 
 

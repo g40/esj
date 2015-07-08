@@ -106,7 +106,7 @@ namespace JSON
 			{
 				Chordia::stringer sb;
 				sb << "Error (" << m_pScanner->Line() << ':' << m_pScanner->Col() << ") " << msg;
-				__THROW(json_exception(sb.c_str()));
+				__PLATFORM_THROW(json_exception(sb.c_str()));
 			}
 		}
 
