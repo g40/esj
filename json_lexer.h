@@ -224,7 +224,7 @@ inline void throw_if(ISource* pSource,bool condition,std::string msg)
 	{
 		Chordia::stringer sb;
 		sb << "Error (" << (pSource ? pSource->Line() : 0) << ':' << (pSource ? pSource->Col() : 0) << ") " << msg;
-		//__THROW(json_exception(sb.c_str()));
+		__PLATFORM_THROW(json_exception(sb.c_str()));
 	}
 }
 
@@ -234,7 +234,7 @@ inline void throw_if(bool condition,Chordia::stringer& msg)
 {
 	if (condition == true)
 	{
-		//__THROW(json_exception(msg.c_str()));
+		__PLATFORM_THROW(json_exception(msg.c_str()));
 	}
 }
 
