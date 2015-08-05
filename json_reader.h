@@ -205,7 +205,7 @@ namespace JSON
 		{
 			std::string ss;
 			GetNext(key,T_STRING,ss,more);
-			value = Chordia::convert(ss);
+			value = Chordia::n2w(ss);
 		}
 		
 		virtual void serialize(const std::string& key,int& value,bool more)
@@ -215,6 +215,20 @@ namespace JSON
 			value = Chordia::toInt(ss);
 		}
 		
+		virtual void serialize(const std::string& key,unsigned int& value,bool more)
+		{
+			std::string ss;
+			GetNext(key,T_NUMBER,ss,more);
+			value = (unsigned int)Chordia::toInt(ss);
+		}
+
+		virtual void serialize(const std::string& key,long& value,bool more)
+		{
+			std::string ss;
+			GetNext(key,T_NUMBER,ss,more);
+			value = static_cast<long>(Chordia::toInt(ss));
+		}
+
 		virtual void serialize(const std::string& key,unsigned char& value,bool more)
 		{
 			std::string ss;
@@ -257,7 +271,7 @@ namespace JSON
 			//
 			GetNext(T_STRING);
 			// do conversion
-			ret = Chordia::convert(m_token.text);
+			ret = Chordia::n2w(m_token.text);
 		}
 
 		virtual void serialize(int& value)	
@@ -265,6 +279,20 @@ namespace JSON
 			GetNext(T_NUMBER);
 			// key matches parsed value
 			value = static_cast<char>(Chordia::toInt(m_token.text));
+		}
+
+		virtual void serialize(unsigned int& value)	
+		{
+			GetNext(T_NUMBER);
+			// key matches parsed value
+			value = static_cast<unsigned int>(Chordia::toInt(m_token.text));
+		}
+
+		virtual void serialize(long& value)	
+		{
+			GetNext(T_NUMBER);
+			// key matches parsed value
+			value = static_cast<long>(Chordia::toInt(m_token.text));
 		}
 
 		virtual void serialize(double& value)	
