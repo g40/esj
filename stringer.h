@@ -134,10 +134,17 @@ namespace Chordia
 		return toString((int64_t)value,base);
 	}
 
+    
 	inline std::string toString(unsigned int value, int base = 10)
 	{
 		return toString((int64_t)value,base);
 	}
+    
+    inline std::string toString(long value, int base = 10)
+    {
+        return toString((int64_t)value,base);
+    }
+    
 
 #ifdef _MSC_VER
 	//-------------------------------------------------------------------------
@@ -558,6 +565,15 @@ public:
 		m_buffer += toString(arg,10);
 		return (*this);
 	}
+
+    //-------------------------------------------------------------------------
+    stringer& operator<<(long arg)
+    {
+        //
+        m_buffer += toString(arg,10);
+        return (*this);
+    }
+    
 
 	//-------------------------------------------------------------------------
 	stringer& operator<<(double arg)
