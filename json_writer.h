@@ -72,6 +72,8 @@ namespace JSON
 		virtual ISink& operator<<(const std::wstring&) = 0;
 		virtual ISink& operator<<(const char&) = 0;
 		virtual ISink& operator<<(const int&) = 0;
+		virtual ISink& operator<<(const unsigned int&) = 0;
+		virtual ISink& operator<<(const long&) = 0;
 		virtual ISink& operator<<(const double&) = 0;
 		virtual ISink& operator<<(const bool&) = 0;
 
@@ -93,6 +95,8 @@ namespace JSON
 		virtual ISink& operator<<(const std::wstring& arg)	{ (*_sink) << arg; return (*this); }
 		virtual ISink& operator<<(const char& arg)			{ (*_sink) << arg; return (*this); }
 		virtual ISink& operator<<(const int& arg)			{ (*_sink) << arg; return (*this); }
+		virtual ISink& operator<<(const long& arg)			{ (*_sink) << arg; return (*this); }
+		virtual ISink& operator<<(const unsigned int& arg)	{ (*_sink) << arg; return (*this); }
 		virtual ISink& operator<<(const double& arg)		{ (*_sink) << arg; return (*this); }
 		virtual ISink& operator<<(const bool& arg)			{ (*_sink) << arg; return (*this); }
 	};
@@ -131,7 +135,7 @@ namespace JSON
 
 		virtual void serialize(const std::string& key,std::wstring& value,bool more) 
 		{
-			(*_sink) << Quote() << key << Quote() << ':' << Quote() << Chordia::escape(value) << Quote() << (more ? "," : "");
+			(*_sink) << Quote() << key << Quote() << ':' << Quote() << Chordia::escape(Chordia::w2n(value)) << Quote() << (more ? "," : "");
 		}
 
 		virtual void serialize(const std::string& key,int& value,bool more) 
@@ -139,6 +143,16 @@ namespace JSON
 			(*_sink) << Quote() << key << Quote() << ':' << value << (more ? "," : "");
 		}
 		
+		virtual void serialize(const std::string& key,unsigned int& value,bool more) 
+		{
+			(*_sink) << Quote() << key << Quote() << ':' << value << (more ? "," : "");
+		}
+
+		virtual void serialize(const std::string& key,long& value,bool more) 
+		{
+			(*_sink) << Quote() << key << Quote() << ':' << value << (more ? "," : "");
+		}
+
 		virtual void serialize(const std::string& key,unsigned char& value,bool more)
 		{
 			(*_sink) << Quote() << key << Quote() << ':' << value << (more ? "," : "");
@@ -211,11 +225,23 @@ namespace JSON
 
 		virtual void serialize(std::wstring& value)
 		{
-			(*_sink) << Quote() << Chordia::escape(value) << Quote() ;
+			(*_sink) << Quote() << Chordia::escape(Chordia::w2n(value)) << Quote() ;
 		}
 
 		//---------------------------------------------------------------------
 		virtual void serialize(int& value)
+		{
+			(*_sink) << value;
+		}
+
+		//---------------------------------------------------------------------
+		virtual void serialize(unsigned int& value)
+		{
+			(*_sink) << value;
+		}
+
+		//---------------------------------------------------------------------
+		virtual void serialize(long& value)
 		{
 			(*_sink) << value;
 		}

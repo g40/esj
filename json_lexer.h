@@ -55,7 +55,10 @@ class json_exception : public std::runtime_error
 public:
 
 	json_exception(const wchar_t* p) : std::runtime_error(Chordia::convert_w(p).c_str()) {}
+	json_exception(const char* p) : std::runtime_error(p) {}
 };
+
+#define __PLATFORM_THROW(arg) throw (arg)
 
 #else
 

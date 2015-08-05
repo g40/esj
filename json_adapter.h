@@ -107,6 +107,8 @@ class Adapter
 	virtual void serialize(std::wstring&) = 0;
 	virtual void serialize(std::string&) = 0;
 	virtual void serialize(int&) = 0;
+	virtual void serialize(unsigned int&) = 0;
+	virtual void serialize(long&) = 0;
 	virtual void serialize(double&) = 0;
 	virtual void serialize(bool&) = 0;
 	
@@ -114,6 +116,8 @@ class Adapter
 	virtual void serialize(const std::string&,std::wstring&,bool) = 0;
 	virtual void serialize(const std::string&,std::string&,bool) = 0;
 	virtual void serialize(const std::string&,int&,bool) = 0;
+	virtual void serialize(const std::string&,unsigned int&,bool) = 0;
+	virtual void serialize(const std::string&,long&,bool) = 0;
 	virtual void serialize(const std::string&,unsigned char&,bool) = 0;
 	virtual void serialize(const std::string&,double&,bool) = 0;
 	virtual void serialize(const std::string&,bool&,bool) = 0;
@@ -123,8 +127,12 @@ class Adapter
 //-----------------------------------------------------------------------------
 #define DBMSGV(arg)
 
+#ifndef _ASTRING
 #define _ASTRING(arg) arg
-#define _USTRING(arg) L#arg
+#endif
+#ifndef _USTRING
+#define _USTRING(arg) L##arg
+#endif
 
 //-----------------------------------------------------------------------------
 // Some helper macros for brevity
@@ -167,6 +175,13 @@ inline void stream(Adapter& adapter,std::wstring& value)
 
 //-----------------------------------------------------------------------------
 inline void stream(Adapter& adapter,int& value)
+{
+	//
+	adapter.serialize(value);
+}
+
+//-----------------------------------------------------------------------------
+inline void stream(Adapter& adapter,long& value)
 {
 	//
 	adapter.serialize(value);
@@ -217,6 +232,21 @@ inline void	stream(Adapter& adapter,const std::string& key,int& value,bool more)
 	adapter.serialize(key,value,more);
 }
 
+//-----------------------------------------------------------------------------
+// int
+inline void	stream(Adapter& adapter,const std::string& key,unsigned int& value,bool more)
+{
+	adapter.serialize(key,value,more);
+}
+
+//-----------------------------------------------------------------------------
+// long
+inline void	stream(Adapter& adapter,const std::string& key,long& value,bool more)
+{
+	adapter.serialize(key,value,more);
+}
+
+//-----------------------------------------------------------------------------
 inline void stream(Adapter& adapter, const std::string& key, unsigned char& value, bool more) 
 {
 	adapter.serialize(key,value,more);

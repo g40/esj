@@ -39,6 +39,21 @@
 
 namespace Chordia
 {
+	//-----------------------------------------------------------------------------
+	// narrow (UTF8) to wide (UTF16|UTF32)
+	inline std::wstring n2w(const std::string& arg)
+	{
+		return convert(arg);
+	}
+
+
+	//-----------------------------------------------------------------------------
+	// wide to narrow (UTF8)
+	inline std::string w2n(const std::wstring& arg)
+	{
+		return convert(arg);
+	}
+
 
 	//-------------------------------------------------------------------------
 	// strings to various numbers
@@ -115,6 +130,11 @@ namespace Chordia
 
 	//-------------------------------------------------------------------------
 	inline std::string toString(int value, int base = 10)
+	{
+		return toString((int64_t)value,base);
+	}
+
+	inline std::string toString(unsigned int value, int base = 10)
 	{
 		return toString((int64_t)value,base);
 	}
@@ -525,6 +545,14 @@ public:
 
 	//-------------------------------------------------------------------------
 	stringer& operator<<(int arg)
+	{
+		//
+		m_buffer += toString(arg,10);
+		return (*this);
+	}
+
+	//-------------------------------------------------------------------------
+	stringer& operator<<(unsigned int arg)
 	{
 		//
 		m_buffer += toString(arg,10);

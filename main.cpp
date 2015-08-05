@@ -503,6 +503,39 @@ void test_issue2()
 }
 
 //-----------------------------------------------------------------------------
+// absolutely minimal example
+class JSONVector
+{
+public:
+	// content gets streamed to JSON
+	std::vector<std::string> text;
+public:
+	void serialize(JSON::Adapter& adapter)
+	{
+		// this pattern is required 
+		JSON::Class root(adapter,"JSONVector");
+		// this is the last member variable we serialize so use the _T variant
+		JSON_T(adapter,text);
+	}
+};
+
+//-----------------------------------------------------------------------------
+void test_JSONVector()
+{
+	JSONVector jv;
+	jv.text.push_back("Hello");
+	jv.text.push_back("World");
+	jv.text.push_back("I");
+	jv.text.push_back("am");
+	jv.text.push_back("a");
+	jv.text.push_back("vector");
+	std::string json = JSON::producer<JSONVector>::convert(jv);
+	std::cout << "test_JSONVector() " << json << std::endl;
+	std::string expected = "{\"JSONVector\":{\"text\":[\"Hello\",\"World\",\"I\",\"am\",\"a\",\"vector\"]}}";
+	JSON::throw_if(json != expected,Chordia::stringer() << json << "!=" << expected);
+}
+
+//-----------------------------------------------------------------------------
 // to nearest       FE_TONEAREST   _RC_NEAR
 // toward zero      FE_TOWARDZERO  _RC_CHOP
 // to +infinity     FE_UPWARD      _RC_UP
@@ -525,6 +558,8 @@ int main(int argc, char* argv[])
 	tests.push_back(test_nesting2);
 	tests.push_back(test_nesting3);
 	tests.push_back(test_issue2);
+	//
+	tests.push_back(test_JSONVector);
 
 	// invoke each test - keep going even if we get failures
 	int failures = 0;
