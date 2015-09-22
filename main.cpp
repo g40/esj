@@ -536,6 +536,104 @@ void test_JSONVector()
 }
 
 //-----------------------------------------------------------------------------
+// another nesting test
+class Nest2
+{
+public:
+	std::string Name;
+	std::string Value;
+
+
+	Nest2()
+	{
+		Name = "Name";
+		Value = "Value";
+	}
+
+	void serialize(JSON::Adapter& adapter)
+	{
+		JSON::Class root(adapter,"Nest2");
+
+		JSON_E(adapter,Name);
+		JSON_T(adapter,Value);
+	}
+
+	bool operator==(const Nest2& arg) const
+	{
+		return (Name == arg.Name && Value == arg.Value);
+	}
+};
+
+class Nest1
+{
+public:
+	std::string Name;
+	std::vector<Nest2> Properties;
+
+	Nest1()
+	{
+		Name = "Name";
+	}
+
+	void serialize(JSON::Adapter& adapter)
+	{
+		JSON::Class root(adapter,"Nest1");
+
+		JSON_E(adapter,Name);
+		JSON_T(adapter,Properties);
+	}
+
+	bool operator==(const Nest1& arg) const
+	{
+		return (Name == arg.Name && Properties == arg.Properties);
+	}
+};
+
+class Top
+{
+public:
+	std::vector<Nest1> nodes;
+
+	void serialize(JSON::Adapter& adapter)
+	{
+		JSON::Class root(adapter,"Top");
+
+		JSON_T(adapter,nodes);
+	}
+
+	bool operator==(const Top& arg) const
+	{
+		return (nodes == arg.nodes);
+	}
+};
+
+void TestSebTop()
+{
+	try
+	{
+		Top top;
+
+		Nest1 nested_a;
+		Nest1 nested_b;
+
+		top.nodes.push_back(nested_a);
+		top.nodes.push_back(nested_b);
+
+		std::string json = JSON::producer<Top>::convert(top);
+
+		Top mats = JSON::consumer<Top>::convert(json);
+
+		bool ok = (mats == top);
+	}
+	catch (std::exception e)
+	{
+		
+	}
+	catch (...)
+	{
+	}
+}
+//-----------------------------------------------------------------------------
 // to nearest       FE_TONEAREST   _RC_NEAR
 // toward zero      FE_TOWARDZERO  _RC_CHOP
 // to +infinity     FE_UPWARD      _RC_UP
@@ -560,6 +658,7 @@ int main(int argc, char* argv[])
 	tests.push_back(test_issue2);
 	//
 	tests.push_back(test_JSONVector);
+	tests.push_back(TestSebTop);
 
 	// invoke each test - keep going even if we get failures
 	int failures = 0;
