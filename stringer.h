@@ -352,7 +352,8 @@ namespace Chordia
 							// 5. take integral value
 							int64_t iv = static_cast<int64_t>(d2-d1);
 							// 6. append conversion of 'integral' fraction
-							ret += Chordia::toString(iv);
+							// ack. need to ensure number is correctly zero padded
+							ret += Chordia::toString(iv,digits);
 						}
 					}
 				}
