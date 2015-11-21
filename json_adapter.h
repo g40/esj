@@ -20,6 +20,21 @@
 		JSON_T(adapter,c);	// Note 'T' type
 	}
 
+	// another approach. eliminate confusing
+	// macros and problems with 'Class' and 
+	// 
+	void serialize(JSON::json_adapter& adapter)
+	{
+		JSON::Class2 root(adapter,"classname");
+		// JSON_I is adapter.insert(JSON::Container("member_name",member_name));
+		_JSON_I(adapter,a);
+		_JSON_I(adapter,b);
+		_JSON_I(adapter,c);
+		// pro+++: adapter now knows how many elements to expect
+		// con: could forget to commit. make it part of Class destructor?????
+		root.commit();
+	}
+
 	That's all that is required. The adapter can be a reader or writer, the
 	system is symmetric.
 
