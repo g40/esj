@@ -68,4 +68,6 @@ The serializer will also correctly handle nested serializable instances, thus al
 
 Single line macros used for brevity and stringizing only.
 
+N.B. The current release requires c++11 support. Please file an issue if this stops you from using ESJ!
+
 See /doc for more or visit: http://www.codeproject.com/script/Articles/View.aspx?aid=856277
