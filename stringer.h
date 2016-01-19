@@ -151,11 +151,14 @@ namespace Chordia
 		return toString((int64_t)value,base);
 	}
     
+	// thanks to cevarojetam for identifying an NDK problem
+	// https://github.com/g40/esj/issues/9
+#if LONG_MAX != LLONG_MAX
     inline std::string toString(long value, int base = 10)
     {
         return toString((int64_t)value,base);
     }
-    
+#endif    
 
 #ifdef _MSC_VER
 	//-------------------------------------------------------------------------
