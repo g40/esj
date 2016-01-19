@@ -97,7 +97,7 @@ namespace Chordia
 
 	//-------------------------------------------------------------------------
 	// integer to ASCII
-	inline std::string toString(int64_t value, int base = 10)
+	inline std::string toString(int64_t value, int base = 10, unsigned int padding = 0)
 	{
 		std::string result;
 		// this is a symmetric lookup table. zero is mid range
@@ -109,14 +109,25 @@ namespace Chordia
 		{
 			return result;
 		}
+		size_t count = 0;
 		int64_t tmp_value = 0;
 		do
 		{
 			tmp_value = value;
 			value /= base;
 			result += digits [35 + (tmp_value - value * base)];
+			count++;
 		}
 		while (value);
+		// pad with leading zeros ...
+		if (padding > 0 && count > 0)
+		{
+			while (count < padding)
+			{
+				result += '0';
+				count++;
+			}
+		}
 		// Apply negative sign
 		if (tmp_value < 0)
 		{
@@ -353,7 +364,9 @@ namespace Chordia
 							int64_t iv = static_cast<int64_t>(d2-d1);
 							// 6. append conversion of 'integral' fraction
 							// ack. need to ensure number is correctly zero padded
-							ret += Chordia::toString(iv,digits);
+							// yipes. https://github.com/g40/esj/issues/10
+							// 
+							ret += Chordia::toString(iv,10,digits);
 						}
 					}
 				}
